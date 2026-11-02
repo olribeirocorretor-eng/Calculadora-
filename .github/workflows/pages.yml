@@ -1,4 +1,4 @@
-name: Publicar no GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -15,25 +15,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publicar:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Preparar o site
+      - name: Build site
         run: |
           mkdir -p _site
           cp index.html _site/
           touch _site/.nojekyll
 
-      - uses: actions/configure-pages@v5
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
-      - id: deployment
+      - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4
