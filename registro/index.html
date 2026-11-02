@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora Registro - SP</title>
+<meta name="description" content="Calculadora comemorativa de Registro - SP, com as cores do rio Ribeira de Iguape, dos bananais, do chá e das lanternas.">
+<meta name="theme-color" content="#FAFBF6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#152423" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Registro - SP">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Base: margens das áreas seguras do celular (notch e barra inicial) */
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Layout: faixa de cabeçalho com fileiras de chá, calculadora à esquerda, notas de design à direita, rio desenhado no rodapé */
+:root {
+  --bg: #EDF1E8;
+  --surface: #FAFBF6;
+  --ink: #1C2A25;
+  --muted: #5C6C64;
+  --line: #D3DBCF;
+  --river: #2C6B65;
+  --river-ink: #F4FAF8;
+  --tea: #56793A;
+  --lantern: #D47A22;
+  --lantern-ink: #1E1408;
+  --brick: #964631;
+  --leaf: #6A962C;
+  --display-bg: #1B2C2A;
+  --display-ink: #F3EFE2;
+  --display-muted: #9DB3AC;
+  --key: #FFFFFF;
+  --key-hover: #F0F4EC;
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1918; --surface: #152423; --ink: #E7EDE6; --muted: #92A49D; --line: #263A38;
+    --river: #4FA79C; --river-ink: #08201D; --tea: #8CB262; --lantern: #F0A247; --lantern-ink: #241605;
+    --brick: #CF7F63; --leaf: #9CC44F; --display-bg: #091211; --display-ink: #F6EFDC; --display-muted: #7F9A92;
+    --key: #1C2E2C; --key-hover: #24403C; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1918; --surface: #152423; --ink: #E7EDE6; --muted: #92A49D; --line: #263A38;
+  --river: #4FA79C; --river-ink: #08201D; --tea: #8CB262; --lantern: #F0A247; --lantern-ink: #241605;
+  --brick: #CF7F63; --leaf: #9CC44F; --display-bg: #091211; --display-ink: #F6EFDC; --display-muted: #7F9A92;
+  --key: #1C2E2C; --key-hover: #24403C; color-scheme: dark;
+}
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+
+.band {
+  background:
+    repeating-linear-gradient(-28deg, transparent 0 14px, color-mix(in srgb, var(--tea) 14%, transparent) 14px 17px),
+    var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden; --slit: var(--surface);
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header .wrap { position: relative; z-index: 1; padding-block: 28px 24px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--river); font-weight: 700; margin: 0 0 6px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 5vw, 46px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 span { color: var(--lantern); }
+.lede { margin: 8px 0 0; color: var(--muted); max-width: 52ch; }
+.coords { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.coords b { display: block; font-family: var(--font-display); font-size: 22px; color: var(--ink); letter-spacing: .08em; }
+
+main .wrap { padding-block: 32px 24px; display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 820px) { main .wrap { grid-template-columns: minmax(0, 1fr); justify-items: center; } .notes { justify-self: stretch; } }
+
+/* Calculadora */
+.calc {
+  width: 100%; max-width: 400px; position: relative;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+  padding: 18px; box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--river) 60%, transparent);
+}
+.bananeira { position: absolute; pointer-events: none; color: var(--leaf); }
+.bananeira svg { position: absolute; bottom: 0; left: 0; width: 46px; height: 184px; transform-origin: 50% 100%; }
+.band .bananeira { right: 6%; bottom: -30px; width: 200px; height: 200px; opacity: .3; }
+.band .bananeira svg:nth-child(1) { left: 78px; transform: rotate(-58deg); }
+.band .bananeira svg:nth-child(2) { left: 78px; transform: rotate(-22deg); height: 200px; }
+.band .bananeira svg:nth-child(3) { left: 78px; transform: rotate(16deg); }
+.band .bananeira svg:nth-child(4) { left: 78px; transform: rotate(52deg); height: 160px; }
+main { overflow-x: clip; }
+.calc { --slit: var(--bg); }
+.calc .bananeira { z-index: -1; top: -60px; left: -40px; width: 120px; height: 140px; opacity: .9; }
+.calc .bananeira svg:nth-child(1) { left: 40px; transform: rotate(-20deg); height: 150px; }
+.calc .bananeira svg:nth-child(2) { left: 40px; transform: rotate(-54deg); height: 120px; }
+.calc-leaf-left { position: absolute; z-index: -1; left: -30px; bottom: 40px; width: 36px; height: 140px; color: var(--leaf); opacity: .75; transform: rotate(-24deg); pointer-events: none; }
+@media (max-width: 460px) { .calc .bananeira { left: -20px; } .calc-leaf-left { left: -12px; } }
+.calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 17px; }
+.brand small { font-family: var(--font-body); font-weight: 500; font-size: 11px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-left: 6px; }
+.seal { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--brick); color: var(--brick); display: grid; place-items: center; font-family: var(--font-display); font-size: 10px; font-weight: 800; transform: rotate(-8deg); line-height: 1; }
+
+.display { background: var(--display-bg); color: var(--display-ink); border-radius: 14px; padding: 14px 16px 12px; position: relative; overflow: hidden; }
+.display::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 18px; opacity: .35;
+  background: radial-gradient(12px 6px at 12px 18px, transparent 9px, var(--river) 10px, transparent 11px) 0 0 / 24px 18px repeat-x;
+}
+.expr { min-height: 20px; font-size: 13px; color: var(--display-muted); text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.value { font-family: var(--font-display); font-weight: 600; font-size: 44px; line-height: 1.15; text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; padding-bottom: 10px; }
+.value.small { font-size: 30px; }
+.value.error { font-family: var(--font-body); font-size: 18px; color: var(--lantern); padding-block: 14px 18px; }
+
+.keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-top: 14px; }
+.keys button {
+  font: 500 20px/1 var(--font-body); color: var(--ink); background: var(--key);
+  border: 1px solid var(--line); border-radius: 12px; height: 58px; cursor: pointer;
+  transition: background .12s, transform .08s;
+}
+.keys button:hover { background: var(--key-hover); }
+.keys button:active { transform: translateY(1px); }
+.keys button:focus-visible { outline: 3px solid var(--lantern); outline-offset: 2px; }
+.keys .fn { color: var(--river); font-size: 16px; font-weight: 700; }
+.keys .op { background: var(--river); color: var(--river-ink); border-color: transparent; font-size: 22px; }
+.keys .op:hover { background: color-mix(in srgb, var(--river) 85%, var(--ink)); }
+.keys .op.active { box-shadow: inset 0 0 0 3px var(--lantern); }
+.keys .eq {
+  background: var(--lantern); color: var(--lantern-ink); border-color: transparent;
+  font-family: var(--font-display); font-weight: 800; font-size: 28px; border-radius: 26px 26px 12px 12px;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--lantern) 50%, transparent), 0 10px 24px -10px var(--lantern);
+}
+.keys .eq:hover { background: color-mix(in srgb, var(--lantern) 88%, var(--ink)); }
+.keys .zero { grid-column: span 2; }
+.keys .eq.glow { animation: glow .6s ease-out; }
+@keyframes glow { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--lantern) 60%, transparent); } to { box-shadow: 0 0 0 16px transparent; } }
+@media (prefers-reduced-motion: reduce) { .keys .eq.glow { animation: none; } .keys button { transition: none; } }
+
+.tape { margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.tape-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.tape-head button { font: inherit; color: var(--river); background: none; border: 0; cursor: pointer; letter-spacing: .1em; text-transform: uppercase; padding: 0; }
+.tape ol { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; max-height: 120px; overflow-y: auto; }
+.tape li { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-variant-numeric: tabular-nums; padding: 3px 0; }
+.tape li span:first-child { color: var(--muted); }
+.tape li em { font-style: normal; font-size: 10px; color: var(--brick); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 6px; letter-spacing: .06em; }
+.tape .empty { color: var(--muted); font-size: 13px; }
+
+/* Notas */
+.notes h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; margin: 0 0 6px; text-wrap: balance; }
+.notes > p { color: var(--muted); margin: 0 0 20px; max-width: 60ch; }
+.motifs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 520px) { .motifs { grid-template-columns: minmax(0, 1fr); } }
+.motifs li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 12px; }
+.swatch { width: 14px; height: 14px; border-radius: 4px; margin-top: 5px; }
+.motifs h3 { font-size: 15px; margin: 0 0 2px; }
+.motifs p { margin: 0; color: var(--muted); font-size: 14px; }
+.next { margin-top: 24px; padding: 14px 16px; border-left: 3px solid var(--tea); background: color-mix(in srgb, var(--tea) 9%, transparent); border-radius: 0 10px 10px 0; font-size: 14px; max-width: 62ch; }
+.next b { color: var(--ink); }
+kbd { font-family: var(--font-body); font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--surface); }
+
+footer { margin-top: 16px; }
+footer svg { display: block; width: 100%; height: 70px; }
+footer .wrap { padding-block: 0 20px; font-size: 12px; color: var(--muted); background: transparent; }
+.river-band { background: color-mix(in srgb, var(--river) 18%, var(--bg)); }
+
+/* Botão "Instalar app" e instruções do iPhone */
+.acoes { display: flex; justify-content: flex-end; margin-top: 10px; }
+.instalar {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+  border-radius: 12px; border: 2px solid var(--river); background: var(--surface); color: var(--river);
+  font: 700 14px/1 var(--font-body); cursor: pointer; transition: background .12s, color .12s;
+}
+.instalar:hover, .instalar:active { background: var(--river); color: var(--river-ink); }
+.instalar:focus-visible { outline: 3px solid var(--lantern); outline-offset: 2px; }
+.dialogo {
+  width: min(360px, calc(100% - 32px)); border: 0; border-radius: 18px; padding: 0;
+  background: var(--surface); color: var(--ink); font-family: var(--font-body);
+  box-shadow: 0 24px 60px -12px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.dialogo::backdrop { background: color-mix(in srgb, var(--display-bg) 60%, transparent); }
+.dialogo h2 { margin: 0; padding: 16px 20px; background: var(--river); color: var(--river-ink); font-family: var(--font-display); font-size: 19px; }
+.dialogo-corpo { padding: 16px 20px 20px; }
+.dialogo ol { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 10px; }
+.dialogo svg { vertical-align: -4px; color: var(--river); }
+.dialogo-fechar {
+  width: 100%; min-height: 46px; border: 0; border-radius: 12px; cursor: pointer;
+  background: var(--lantern); color: var(--lantern-ink); font: 700 16px/1 var(--font-body);
+}
+.dialogo-fechar:focus-visible { outline: 3px solid var(--river); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="leaf" viewBox="0 0 40 160">
+    <path d="M20 0 C38 30 40 110 22 160 C6 110 2 30 20 0Z" style="fill: currentColor"/>
+    <path d="M20 6 L21 156" style="stroke: var(--slit); stroke-width: 1.4; fill: none; opacity: .7"/>
+    <path d="M4 58 L15 66 M37 78 L26 86 M6 108 L16 114 M36 38 L27 46 M35 122 L25 128" style="stroke: var(--slit); stroke-width: 2.2; fill: none"/>
+  </symbol>
+</svg>
+
+<header class="band">
+  <div class="bananeira" aria-hidden="true"><svg><use href="#leaf"/></svg><svg><use href="#leaf"/></svg><svg><use href="#leaf"/></svg><svg><use href="#leaf"/></svg></div>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Edição comemorativa · Vale do Ribeira</p>
+      <h1>Calculadora <span>Registro</span></h1>
+      <p class="lede">A calculadora de Registro com as cores do rio Ribeira de Iguape, dos bananais, das plantações de chá e das lanternas da tradição nipo-brasileira da cidade.</p>
+    </div>
+    <div class="coords">
+      <b lang="ja" title="Registro em katakana">レジストロ</b>
+      Registro · SP
+      <div class="acoes">
+        <button type="button" class="instalar" id="instalar" hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          Instalar app
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="calc" aria-label="Calculadora">
+      <div class="bananeira" aria-hidden="true"><svg><use href="#leaf"/></svg><svg><use href="#leaf"/></svg></div>
+      <svg class="calc-leaf-left" viewBox="0 0 40 160" aria-hidden="true"><use href="#leaf"/></svg>
+      <div class="calc-top">
+        <div class="brand">Registro - SP</div>
+        <div class="seal" aria-hidden="true">KKKK</div>
+      </div>
+
+      <div class="display" aria-live="polite">
+        <div class="expr" id="expr">&nbsp;</div>
+        <div class="value" id="value">0</div>
+      </div>
+
+      <div class="keys" id="keys">
+        <button class="fn" data-action="clear" id="k-clear">C</button>
+        <button class="fn" data-action="sign" id="k-sign" aria-label="Trocar sinal">±</button>
+        <button class="fn" data-action="percent" id="k-pct">%</button>
+        <button class="op" data-op="/" id="k-div" aria-label="Dividir">÷</button>
+
+        <button data-digit="7" id="k7">7</button>
+        <button data-digit="8" id="k8">8</button>
+        <button data-digit="9" id="k9">9</button>
+        <button class="op" data-op="*" id="k-mul" aria-label="Multiplicar">×</button>
+
+        <button data-digit="4" id="k4">4</button>
+        <button data-digit="5" id="k5">5</button>
+        <button data-digit="6" id="k6">6</button>
+        <button class="op" data-op="-" id="k-sub" aria-label="Subtrair">−</button>
+
+        <button data-digit="1" id="k1">1</button>
+        <button data-digit="2" id="k2">2</button>
+        <button data-digit="3" id="k3">3</button>
+        <button class="op" data-op="+" id="k-add" aria-label="Somar">+</button>
+
+        <button class="fn" data-action="back" id="k-back" aria-label="Apagar último dígito">⌫</button>
+        <button data-digit="0" id="k0">0</button>
+        <button data-action="dot" id="k-dot" aria-label="Vírgula decimal">,</button>
+        <button class="eq" data-action="equals" id="k-eq" aria-label="Igual">=</button>
+      </div>
+
+      <div class="tape">
+        <div class="tape-head"><span>Fita de cálculos</span><button id="clear-tape" type="button">Limpar</button></div>
+        <ol id="tape"></ol>
+      </div>
+    </section>
+
+    <section class="notes">
+      <h2>O que cada elemento homenageia</h2>
+      <p>A calculadora funciona de verdade: clique nas teclas ou use o teclado (<kbd>0</kbd>–<kbd>9</kbd>, <kbd>+</kbd> <kbd>−</kbd> <kbd>*</kbd> <kbd>/</kbd>, <kbd>Enter</kbd>, <kbd>Backspace</kbd>, <kbd>Esc</kbd>). Os mesmos recursos do script em Python estão aqui, inclusive o aviso de divisão por zero.</p>
+      <ul class="motifs">
+        <li><span class="swatch" style="background: var(--river)"></span><div><h3>Rio Ribeira de Iguape</h3><p>O verde-azulado das teclas de operação e as ondas do visor e do rodapé lembram o rio que corta a cidade e deu origem ao antigo porto.</p></div></li>
+        <li><span class="swatch" style="background: var(--tea)"></span><div><h3>Fileiras de chá</h3><p>As listras diagonais do cabeçalho fazem referência às plantações de chá que marcaram a economia de Registro.</p></div></li>
+        <li><span class="swatch" style="background: var(--lantern)"></span><div><h3>Lanternas no rio</h3><p>A tecla de igual tem formato de lanterna e brilha a cada resultado, inspirada no Toro Nagashi, quando lanternas são soltas no rio.</p></div></li>
+        <li><span class="swatch" style="background: var(--leaf)"></span><div><h3>Bananais do Vale</h3><p>Folhas de bananeira, com os rasgos típicos causados pelo vento, abrem-se no cabeçalho e espiam por trás da calculadora, lembrando a principal lavoura do Vale do Ribeira.</p></div></li>
+        <li><span class="swatch" style="background: var(--brick)"></span><div><h3>Casarões KKKK</h3><p>O selo vermelho-tijolo cita os armazéns históricos da colonização japonesa, iniciada em 1913, à beira do rio. No cabeçalho, レジストロ é como a comunidade nipo-brasileira escreve “Registro”.</p></div></li>
+        <li><span class="swatch" style="background: var(--display-bg)"></span><div><h3>Registro do ouro</h3><p>A “fita de cálculos” guarda cada conta, numa brincadeira com a origem do nome: o posto onde o ouro do Vale era registrado.</p></div></li>
+      </ul>
+      <div class="next"><b>Funciona como app:</b> instale pelo botão “Instalar app” (ou pelo menu do navegador) e use a calculadora sem internet. A fita de cálculos fica guardada neste aparelho.</div>
+    </section>
+  </div>
+</main>
+
+<footer class="river-band">
+  <svg viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true">
+    <rect width="1200" height="70" style="fill: var(--bg)"/>
+    <path d="M0 30 C150 10 300 50 450 30 S750 10 900 30 S1100 50 1200 28 V70 H0Z" style="fill: color-mix(in srgb, var(--river) 18%, var(--bg))"/>
+    <path d="M0 46 C200 30 350 62 600 44 S1000 30 1200 46 V70 H0Z" style="fill: color-mix(in srgb, var(--river) 30%, var(--bg))"/>
+    <g style="fill: var(--lantern)"><circle cx="260" cy="40" r="3"/><circle cx="640" cy="36" r="3"/><circle cx="980" cy="40" r="3"/></g>
+  </svg>
+  <div class="wrap" style="background: color-mix(in srgb, var(--river) 30%, var(--bg));">Edição comemorativa · sem uso de brasão ou marca oficial do município</div>
+</footer>
+
+<dialog class="dialogo" id="dialogo-ios" aria-labelledby="dialogo-ios-titulo">
+  <h2 id="dialogo-ios-titulo">Instalar no iPhone</h2>
+  <div class="dialogo-corpo">
+    <ol>
+      <li>No Safari, toque em <strong>Compartilhar</strong>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/></svg>
+        na barra do navegador.</li>
+      <li>Role a lista e toque em <strong>Adicionar à Tela de Início</strong>.</li>
+      <li>Toque em <strong>Adicionar</strong>. O ícone da lanterna aparece na tela inicial.</li>
+    </ol>
+    <button type="button" class="dialogo-fechar" id="dialogo-ios-fechar">Entendi</button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const valueEl = document.getElementById('value');
+  const exprEl = document.getElementById('expr');
+  const tapeEl = document.getElementById('tape');
+  const eqBtn = document.getElementById('k-eq');
+
+  const SYM = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+  const fmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 10 });
+  let current = '0', previous = null, op = null, fresh = false, error = false;
+  const CHAVE_FITA = 'calculadora-registro-fita';
+  const EXEMPLOS = [
+    { text: '1.913 + 113', result: '2.026', example: true },
+    { text: '12 × 30', result: '360', example: true },
+  ];
+  function carregarFita() {
+    try {
+      const salva = JSON.parse(localStorage.getItem(CHAVE_FITA));
+      return Array.isArray(salva) ? salva : EXEMPLOS.slice();
+    } catch (e) { return EXEMPLOS.slice(); }
+  }
+  function salvarFita() {
+    try { localStorage.setItem(CHAVE_FITA, JSON.stringify(tape)); } catch (e) { /* segue sem guardar */ }
+  }
+  let tape = carregarFita();
+
+  const clean = n => Number.parseFloat(n.toPrecision(12));
+  const show = s => {
+    if (s === '-') return '−';
+    const [int, dec] = s.split('.');
+    const neg = int.startsWith('-');
+    const body = fmt.format(Math.abs(Number(int)) || 0);
+    return (neg ? '−' : '') + body + (dec !== undefined ? ',' + dec : '');
+  };
+
+  function render() {
+    valueEl.classList.toggle('error', error);
+    if (!error) {
+      const txt = show(current);
+      valueEl.textContent = txt;
+      valueEl.classList.toggle('small', txt.length > 11);
+    }
+    exprEl.innerHTML = previous !== null && op ? `${show(String(previous))} ${SYM[op]}` : '&nbsp;';
+    document.querySelectorAll('.keys .op').forEach(b => b.classList.toggle('active', b.dataset.op === op && fresh));
+    tapeEl.innerHTML = tape.length
+      ? tape.slice().reverse().map(t => `<li><span>${t.text}${t.example ? '<em>exemplo</em>' : ''}</span><strong>${t.result}</strong></li>`).join('')
+      : '<li class="empty">Os resultados aparecem aqui.</li>';
+  }
+
+  function compute(a, b, o) {
+    if (o === '/' && b === 0) throw new Error('Não é possível dividir por zero.');
+    return clean(o === '+' ? a + b : o === '-' ? a - b : o === '*' ? a * b : a / b);
+  }
+
+  function digit(d) {
+    if (error) reset();
+    if (fresh) { current = '0'; fresh = false; }
+    if (current.replace(/[-.]/g, '').length >= 15) return;
+    current = current === '0' ? d : current === '-0' ? '-' + d : current + d;
+  }
+  function dot() {
+    if (error) reset();
+    if (fresh) { current = '0'; fresh = false; }
+    if (!current.includes('.')) current += '.';
+  }
+  function setOp(o) {
+    if (error) return;
+    if (op && !fresh) { if (!equals(true)) return; }
+    previous = Number(current); op = o; fresh = true;
+  }
+  function equals(chained = false) {
+    if (error || op === null || previous === null) return false;
+    const a = previous, b = Number(current), o = op;
+    try {
+      const r = compute(a, b, o);
+      tape.push({ text: `${show(String(a))} ${SYM[o]} ${show(String(b))}`, result: show(String(r)) });
+      if (tape.length > 30) tape.shift();
+      salvarFita();
+      current = String(r); previous = null; op = null; fresh = true;
+      if (!chained) { eqBtn.classList.remove('glow'); void eqBtn.offsetWidth; eqBtn.classList.add('glow'); }
+      return true;
+    } catch (e) {
+      error = true; valueEl.textContent = e.message; previous = null; op = null; fresh = true;
+      return false;
+    }
+  }
+  function reset() { current = '0'; previous = null; op = null; fresh = false; error = false; }
+  function back() {
+    if (error) { reset(); return; }
+    if (fresh) return;
+    current = current.length > 1 && current !== '-0' ? current.slice(0, -1) : '0';
+    if (current === '-') current = '0';
+  }
+  function sign() { if (!error) current = current.startsWith('-') ? current.slice(1) : (current === '0' ? '0' : '-' + current); }
+  function percent() {
+    if (error) return;
+    const n = Number(current);
+    current = String(clean(previous !== null && (op === '+' || op === '-') ? previous * n / 100 : n / 100));
+  }
+
+  document.getElementById('keys').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.digit) digit(b.dataset.digit);
+    else if (b.dataset.op) setOp(b.dataset.op);
+    else ({ clear: reset, back, dot, sign, percent, equals: () => equals() })[b.dataset.action]();
+    render();
+  });
+  document.getElementById('clear-tape').addEventListener('click', () => { tape = []; salvarFita(); render(); });
+
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (document.querySelector('dialog[open]')) return;
+    const focado = document.activeElement;
+    if ((e.key === 'Enter' || e.key === ' ') && focado && focado.matches('a, button') && !focado.closest('#keys')) return;
+    const k = e.key; let handled = true;
+    if (/^[0-9]$/.test(k)) digit(k);
+    else if (k === '.' || k === ',') dot();
+    else if ('+-*/'.includes(k) && k.length === 1) setOp(k);
+    else if (k === 'Enter' || k === '=') equals();
+    else if (k === 'Backspace') back();
+    else if (k === 'Escape' || k === 'Delete') reset();
+    else if (k === '%') percent();
+    else handled = false;
+    if (handled) { e.preventDefault(); render(); }
+  });
+
+  render();
+
+  // Progressive Web App: permite instalar e usar sem internet.
+  // (Service workers só funcionam em https ou localhost, não abrindo o arquivo direto.)
+  const podeInstalar = location.protocol === 'https:' || location.hostname === 'localhost';
+  if ('serviceWorker' in navigator && podeInstalar) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => { /* segue sem modo offline */ });
+    });
+  }
+
+  const botaoInstalar = document.getElementById('instalar');
+  const dialogoIos = document.getElementById('dialogo-ios');
+  let pedidoInstalacao = null;
+  const jaInstalado = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    window.navigator.standalone === true;
+  const ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Chrome, Edge e Samsung Internet avisam quando o app pode ser instalado.
+  window.addEventListener('beforeinstallprompt', (ev) => {
+    ev.preventDefault();
+    pedidoInstalacao = ev;
+    botaoInstalar.hidden = false;
+  });
+  // iPhone/iPad não têm esse aviso: o botão mostra as instruções do Safari.
+  if (ehIos && !jaInstalado && podeInstalar) botaoInstalar.hidden = false;
+
+  botaoInstalar.addEventListener('click', () => {
+    if (pedidoInstalacao) {
+      pedidoInstalacao.prompt();
+      pedidoInstalacao.userChoice.then((escolha) => {
+        if (escolha.outcome === 'accepted') botaoInstalar.hidden = true;
+        pedidoInstalacao = null;
+      });
+    } else if (ehIos && dialogoIos.showModal) {
+      dialogoIos.showModal();
+    }
+  });
+  document.getElementById('dialogo-ios-fechar').addEventListener('click', () => dialogoIos.close());
+  window.addEventListener('appinstalled', () => { botaoInstalar.hidden = true; pedidoInstalacao = null; });
+})();
+</script>
+</body>
+</html>
