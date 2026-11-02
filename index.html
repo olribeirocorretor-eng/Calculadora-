@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#D3161E">
+<title>SINDMUNICIPAIS · Calculadora</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Crect width='120' height='110' rx='18' fill='%23D3161E'/%3E%3Ccircle cx='74' cy='24' r='19' fill='%23111'/%3E%3Cpath d='M60 50C80 44 100 40 118 42C104 50 90 56 80 60C84 76 90 92 96 108C84 98 76 86 70 74C70 86 68 98 64 108C58 88 56 68 60 50Z' fill='%23111'/%3E%3Ccircle cx='58' cy='26' r='19' fill='%23fff'/%3E%3Cpath d='M64 52C46 44 24 42 2 46C18 52 34 58 46 64C40 78 32 92 22 108C36 100 46 88 52 76C56 88 60 98 66 104C68 84 70 66 64 52Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vermelho: #D3161E;
+    --preto: #111111;
+    --branco: #FFFFFF;
+    --cinza: #EEECEB;
+    --cinza-borda: #E3E0DF;
+    --fundo: #F7F5F4;
+    --texto-suave: #5C5C5C;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--preto);
+    background: #2A2A2A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    max-height: 880px;
+    display: flex;
+    flex-direction: column;
+    background: var(--fundo);
+    overflow: hidden;
+  }
+
+  @media (min-width: 480px) and (min-height: 700px) {
+    .app {
+      height: calc(100% - 48px);
+      border-radius: 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  /* Topo */
+  .topo {
+    background: var(--vermelho);
+    padding: calc(24px + env(safe-area-inset-top)) 24px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 0 0 auto;
+  }
+
+  .topo svg { flex: 0 0 auto; }
+
+  .marca {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .marca h1 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+
+  .marca .sind { color: var(--preto); }
+  .marca .municipais { color: var(--branco); }
+
+  .selo {
+    background: var(--branco);
+    color: var(--preto);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+
+  /* Registro */
+  .registro {
+    margin: 16px 16px 0;
+    background: var(--branco);
+    border-radius: 16px;
+    padding: 12px 16px;
+    min-height: 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .registro-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .registro h2 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+  }
+
+  .link-limpar {
+    background: none;
+    border: 0;
+    padding: 4px 0;
+    min-height: 28px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vermelho);
+    cursor: pointer;
+  }
+
+  .registro ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .registro li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 14px;
+    border-top: 1px solid var(--cinza);
+    padding-top: 4px;
+  }
+
+  .registro li .conta {
+    color: var(--texto-suave);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .registro li .res {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .vazio {
+    margin: 0;
+    font-size: 14px;
+    color: var(--texto-suave);
+  }
+
+  /* Visor */
+  .visor {
+    flex: 1 1 auto;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 8px 24px 12px;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .expressao {
+    font-size: 18px;
+    color: var(--texto-suave);
+    min-height: 22px;
+    text-align: right;
+  }
+
+  .valor {
+    font-size: 60px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .valor.medio { font-size: 48px; }
+  .valor.pequeno { font-size: 38px; }
+
+  /* Teclado */
+  .teclado {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+    background: var(--branco);
+    border-radius: 28px 28px 0 0;
+    flex: 0 0 auto;
+  }
+
+  .tecla {
+    height: 68px;
+    border-radius: 18px;
+    border: 1px solid var(--cinza-borda);
+    background: var(--branco);
+    color: var(--preto);
+    font: inherit;
+    font-size: 26px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.06s ease, filter 0.12s ease;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  .tecla:active, .tecla.pressionada { transform: scale(0.95); filter: brightness(0.92); }
+  .tecla:focus-visible, .link-limpar:focus-visible {
+    outline: 3px solid var(--preto);
+    outline-offset: 2px;
+  }
+
+  .tecla.funcao { background: var(--cinza); border-color: var(--cinza); }
+  .tecla.funcao.limpar { color: var(--vermelho); font-weight: 700; font-size: 22px; }
+  .tecla.operador { background: var(--preto); border-color: var(--preto); color: var(--branco); font-size: 28px; }
+  .tecla.operador.ativo { background: var(--branco); color: var(--preto); border: 2px solid var(--preto); }
+  .tecla.igual { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); font-size: 30px; font-weight: 700; }
+
+  @media (max-height: 700px) {
+    .tecla { height: 56px; }
+    .registro { min-height: 0; }
+    .valor { font-size: 48px; }
+  }
+
+  .visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <header class="topo">
+    <svg width="68" height="62" viewBox="0 0 120 110" role="img" aria-label="Símbolo SINDMUNICIPAIS">
+      <circle cx="74" cy="24" r="19" fill="#111111"/>
+      <path d="M60 50 C80 44 100 40 118 42 C104 50 90 56 80 60 C84 76 90 92 96 108 C84 98 76 86 70 74 C70 86 68 98 64 108 C58 88 56 68 60 50 Z" fill="#111111"/>
+      <circle cx="58" cy="26" r="19" fill="#FFFFFF"/>
+      <path d="M64 52 C46 44 24 42 2 46 C18 52 34 58 46 64 C40 78 32 92 22 108 C36 100 46 88 52 76 C56 88 60 98 66 104 C68 84 70 66 64 52 Z" fill="#FFFFFF"/>
+    </svg>
+    <div class="marca">
+      <h1><span class="sind">SIND</span><span class="municipais">MUNICIPAIS</span></h1>
+      <span class="selo">REGISTRO - SP</span>
+    </div>
+  </header>
+
+  <section class="registro" aria-labelledby="titulo-registro">
+    <div class="registro-cabecalho">
+      <h2 id="titulo-registro">Registro · <span id="total">0</span></h2>
+      <button type="button" class="link-limpar" id="limpar-registro">Limpar</button>
+    </div>
+    <p class="vazio" id="vazio">Nenhum cálculo registrado ainda.</p>
+    <ul id="lista"></ul>
+  </section>
+
+  <div class="visor" role="status" aria-live="polite">
+    <span class="expressao" id="expressao"></span>
+    <span class="valor" id="valor">0</span>
+  </div>
+
+  <div class="teclado" id="teclado">
+    <button type="button" class="tecla funcao limpar" data-acao="limpar" aria-label="Limpar">C</button>
+    <button type="button" class="tecla funcao" data-acao="apagar" aria-label="Apagar último dígito">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><path d="M17 9l-5 6"/><path d="M12 9l5 6"/></svg>
+    </button>
+    <button type="button" class="tecla funcao" data-acao="porcento" aria-label="Porcentagem">%</button>
+    <button type="button" class="tecla operador" data-op="div" aria-label="Dividir">÷</button>
+
+    <button type="button" class="tecla" data-digito="7">7</button>
+    <button type="button" class="tecla" data-digito="8">8</button>
+    <button type="button" class="tecla" data-digito="9">9</button>
+    <button type="button" class="tecla operador" data-op="mul" aria-label="Multiplicar">×</button>
+
+    <button type="button" class="tecla" data-digito="4">4</button>
+    <button type="button" class="tecla" data-digito="5">5</button>
+    <button type="button" class="tecla" data-digito="6">6</button>
+    <button type="button" class="tecla operador" data-op="sub" aria-label="Subtrair">−</button>
+
+    <button type="button" class="tecla" data-digito="1">1</button>
+    <button type="button" class="tecla" data-digito="2">2</button>
+    <button type="button" class="tecla" data-digito="3">3</button>
+    <button type="button" class="tecla operador" data-op="add" aria-label="Somar">+</button>
+
+    <button type="button" class="tecla" data-acao="sinal" aria-label="Inverter sinal">±</button>
+    <button type="button" class="tecla" data-digito="0">0</button>
+    <button type="button" class="tecla" data-digito="." aria-label="Vírgula decimal">,</button>
+    <button type="button" class="tecla igual" data-acao="igual" aria-label="Igual">=</button>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var SIMBOLOS = { add: '+', sub: '−', mul: '×', div: '÷' };
+  var MAX_DIGITOS = 12;
+  var MAX_REGISTRO = 50;
+  var CHAVE_REGISTRO = 'sindmunicipais-registro';
+  var MSG_DIV_ZERO = 'Não é possível dividir por zero';
+
+  var estado = {
+    raw: '0',      // número atual em texto, com ponto decimal
+    acc: null,     // valor acumulado
+    op: null,      // operação pendente
+    novo: true,    // próximo dígito começa um número novo
+    expr: '',
+    registro: carregarRegistro()
+  };
+
+  var el = {
+    valor: document.getElementById('valor'),
+    expressao: document.getElementById('expressao'),
+    lista: document.getElementById('lista'),
+    vazio: document.getElementById('vazio'),
+    total: document.getElementById('total'),
+    teclado: document.getElementById('teclado'),
+    limparRegistro: document.getElementById('limpar-registro')
+  };
+
+  /* ---------- Cálculo e formatação ---------- */
+
+  function calcular(a, b, op) {
+    switch (op) {
+      case 'add': return a + b;
+      case 'sub': return a - b;
+      case 'mul': return a * b;
+      case 'div': return b === 0 ? NaN : a / b;
+    }
+    return b;
+  }
+
+  function paraTexto(n) {
+    if (!isFinite(n)) return 'Erro';
+    return String(parseFloat(n.toPrecision(12)));
+  }
+
+  // "1234.5" -> "1.234,5"
+  function exibir(s) {
+    if (s === 'Erro') return s;
+    if (/e/i.test(s)) return s.replace('.', ',');
+    var neg = s.charAt(0) === '-';
+    var t = neg ? s.slice(1) : s;
+    var partes = t.split('.');
+    var inteiro = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return (neg ? '−' : '') + inteiro + (partes.length > 1 ? ',' + partes[1] : '');
+  }
+
+  /* ---------- Registro (salvo no navegador) ---------- */
+
+  function carregarRegistro() {
+    try {
+      var dados = JSON.parse(localStorage.getItem(CHAVE_REGISTRO) || '[]');
+      return Array.isArray(dados) ? dados.slice(0, MAX_REGISTRO) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function salvarRegistro() {
+    try {
+      localStorage.setItem(CHAVE_REGISTRO, JSON.stringify(estado.registro));
+    } catch (e) { /* armazenamento indisponível: segue só na memória */ }
+  }
+
+  /* ---------- Ações ---------- */
+
+  function erro() {
+    estado.raw = 'Erro';
+    estado.acc = null;
+    estado.op = null;
+    estado.novo = true;
+    estado.expr = MSG_DIV_ZERO;
+  }
+
+  function digito(d) {
+    var raw = estado.raw;
+    if (estado.novo || raw === 'Erro') {
+      raw = d === '.' ? '0.' : d;
+      if (raw !== 'Erro' && estado.op === null) estado.expr = '';
+    } else {
+      if (d === '.' && raw.indexOf('.') !== -1) return;
+      if (raw.replace(/[-.]/g, '').length >= MAX_DIGITOS) return;
+      raw = (raw === '0' && d !== '.') ? d : raw + d;
+    }
+    estado.raw = raw;
+    estado.novo = false;
+  }
+
+  function operador(o) {
+    if (estado.raw === 'Erro') return;
+    var atual = parseFloat(estado.raw);
+    if (estado.op && !estado.novo) {
+      var r = calcular(estado.acc, atual, estado.op);
+      if (!isFinite(r)) { erro(); return; }
+      estado.acc = r;
+      estado.raw = paraTexto(r);
+    } else if (!estado.op) {
+      estado.acc = atual;
+    }
+    estado.op = o;
+    estado.novo = true;
+    estado.expr = exibir(paraTexto(estado.acc)) + ' ' + SIMBOLOS[o];
+  }
+
+  function igual() {
+    if (!estado.op || estado.raw === 'Erro') return;
+    var b = parseFloat(estado.raw);
+    var r = calcular(estado.acc, b, estado.op);
+    var conta = exibir(paraTexto(estado.acc)) + ' ' + SIMBOLOS[estado.op] + ' ' + exibir(paraTexto(b));
+    if (!isFinite(r)) { erro(); return; }
+    estado.registro.unshift({ conta: conta, res: exibir(paraTexto(r)) });
+    estado.registro = estado.registro.slice(0, MAX_REGISTRO);
+    salvarRegistro();
+    estado.raw = paraTexto(r);
+    estado.acc = null;
+    estado.op = null;
+    estado.novo = true;
+    estado.expr = conta + ' =';
+  }
+
+  function limpar() {
+    estado.raw = '0';
+    estado.acc = null;
+    estado.op = null;
+    estado.novo = true;
+    estado.expr = '';
+  }
+
+  function apagar() {
+    if (estado.novo || estado.raw === 'Erro') {
+      estado.raw = '0';
+      estado.novo = false;
+      return;
+    }
+    var r = estado.raw.slice(0, -1);
+    estado.raw = (r === '' || r === '-') ? '0' : r;
+  }
+
+  function porcento() {
+    if (estado.raw === 'Erro') return;
+    estado.raw = paraTexto(parseFloat(estado.raw) / 100);
+    estado.novo = false;
+  }
+
+  function sinal() {
+    var r = estado.raw;
+    if (r === '0' || r === 'Erro') return;
+    estado.raw = r.charAt(0) === '-' ? r.slice(1) : '-' + r;
+    estado.novo = false;
+  }
+
+  var ACOES = { limpar: limpar, apagar: apagar, porcento: porcento, sinal: sinal, igual: igual };
+
+  /* ---------- Desenho na tela ---------- */
+
+  function render() {
+    var texto = exibir(estado.raw);
+    el.valor.textContent = texto;
+    el.valor.className = 'valor' + (texto.length > 11 ? ' pequeno' : texto.length > 8 ? ' medio' : '');
+    el.expressao.textContent = estado.expr;
+
+    var botoesOp = el.teclado.querySelectorAll('[data-op]');
+    for (var i = 0; i < botoesOp.length; i++) {
+      var ativo = estado.op === botoesOp[i].getAttribute('data-op') && estado.novo;
+      botoesOp[i].classList.toggle('ativo', ativo);
+      botoesOp[i].setAttribute('aria-pressed', ativo ? 'true' : 'false');
+    }
+
+    el.total.textContent = estado.registro.length;
+    el.vazio.hidden = estado.registro.length > 0;
+    el.lista.textContent = '';
+    estado.registro.slice(0, 3).forEach(function (item) {
+      var li = document.createElement('li');
+      var conta = document.createElement('span');
+      conta.className = 'conta';
+      conta.textContent = item.conta;
+      var res = document.createElement('span');
+      res.className = 'res';
+      res.textContent = '= ' + item.res;
+      li.appendChild(conta);
+      li.appendChild(res);
+      el.lista.appendChild(li);
+    });
+  }
+
+  /* ---------- Eventos ---------- */
+
+  el.teclado.addEventListener('click', function (ev) {
+    var botao = ev.target.closest('button');
+    if (!botao) return;
+    if (botao.dataset.digito) digito(botao.dataset.digito);
+    else if (botao.dataset.op) operador(botao.dataset.op);
+    else if (ACOES[botao.dataset.acao]) ACOES[botao.dataset.acao]();
+    render();
+  });
+
+  el.limparRegistro.addEventListener('click', function () {
+    estado.registro = [];
+    salvarRegistro();
+    render();
+  });
+
+  // Teclado físico
+  var MAPA_TECLAS = {
+    '+': '[data-op="add"]', '-': '[data-op="sub"]',
+    '*': '[data-op="mul"]', 'x': '[data-op="mul"]', '/': '[data-op="div"]',
+    'Enter': '[data-acao="igual"]', '=': '[data-acao="igual"]',
+    'Backspace': '[data-acao="apagar"]', 'Escape': '[data-acao="limpar"]',
+    'Delete': '[data-acao="limpar"]', '%': '[data-acao="porcento"]',
+    ',': '[data-digito="."]', '.': '[data-digito="."]'
+  };
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    var seletor = /^[0-9]$/.test(ev.key) ? '[data-digito="' + ev.key + '"]' : MAPA_TECLAS[ev.key];
+    if (!seletor) return;
+    // Enter sempre significa "=" (preventDefault evita acionar a tecla que estiver focada).
+    // Quem navega com Tab aciona a tecla focada com a barra de espaço.
+    var botao = el.teclado.querySelector(seletor);
+    if (!botao) return;
+    ev.preventDefault();
+    botao.classList.add('pressionada');
+    setTimeout(function () { botao.classList.remove('pressionada'); }, 100);
+    botao.click();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
