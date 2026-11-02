@@ -273,7 +273,7 @@ footer .wrap { padding-block: 0 20px; font-size: 12px; color: var(--muted); back
         <ol id="tape"></ol>
       </div>
 
-      <button type="button" class="instalar" id="instalar">
+      <button type="button" class="instalar" id="instalar" hidden>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         Instalar app
       </button>
@@ -305,27 +305,17 @@ footer .wrap { padding-block: 0 20px; font-size: 12px; color: var(--muted); back
   <div class="wrap" style="background: color-mix(in srgb, var(--river) 30%, var(--bg));">Edição comemorativa · sem uso de brasão ou marca oficial do município</div>
 </footer>
 
-<dialog class="dialogo" id="dialogo-instalar" aria-labelledby="dialogo-instalar-titulo">
-  <h2 id="dialogo-instalar-titulo">Instalar o app</h2>
+<dialog class="dialogo" id="dialogo-ios" aria-labelledby="dialogo-ios-titulo">
+  <h2 id="dialogo-ios-titulo">Instalar no iPhone</h2>
   <div class="dialogo-corpo">
-    <ol data-guia="ios" hidden>
+    <ol>
       <li>No Safari, toque em <strong>Compartilhar</strong>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/></svg>
         na barra do navegador.</li>
       <li>Role a lista e toque em <strong>Adicionar à Tela de Início</strong>.</li>
       <li>Toque em <strong>Adicionar</strong>. O ícone da lanterna aparece na tela inicial.</li>
     </ol>
-    <ol data-guia="app-interno" hidden>
-      <li>Esta página está aberta dentro de outro app (WhatsApp, Instagram ou Facebook), que não instala aplicativos.</li>
-      <li>Toque no menu <strong>⋮</strong> ou <strong>⋯</strong> e escolha <strong>Abrir no navegador</strong> (Chrome ou Safari).</li>
-      <li>No navegador, toque de novo em <strong>Instalar app</strong>.</li>
-    </ol>
-    <ol data-guia="menu" hidden>
-      <li>Abra o menu do navegador: <strong>⋮</strong> no Chrome ou <strong>⋯</strong> no Edge e no Samsung Internet.</li>
-      <li>Toque em <strong>Instalar app</strong> ou <strong>Adicionar à tela inicial</strong>.</li>
-      <li>Se a opção não aparecer, abra esta página no Chrome ou no Edge. O Firefox no computador não instala apps.</li>
-    </ol>
-    <button type="button" class="dialogo-fechar" id="dialogo-fechar">Entendi</button>
+    <button type="button" class="dialogo-fechar" id="dialogo-ios-fechar">Entendi</button>
   </div>
 </dialog>
 
@@ -466,35 +456,30 @@ footer .wrap { padding-block: 0 20px; font-size: 12px; color: var(--muted); back
     });
   }
 
+  /* ---------- Botão "Instalar app" (mesma lógica da calculadora SINDMUNICIPAIS) ---------- */
+
   const botaoInstalar = document.getElementById('instalar');
-  const dialogo = document.getElementById('dialogo-instalar');
-  const tituloDialogo = document.getElementById('dialogo-instalar-titulo');
-  let pedidoInstalacao = window.__pedidoInstalacao || null;
+  const dialogoIos = document.getElementById('dialogo-ios');
   const jaInstalado = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
     window.navigator.standalone === true;
   const ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const ehAppInterno = /FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(navigator.userAgent);
 
-  // O botão fica sempre visível, exceto quando a calculadora já está aberta como app instalado.
-  botaoInstalar.hidden = jaInstalado;
+  // O aviso pode ter chegado antes deste código (o <head> já o guardou em window.__pedidoInstalacao).
+  let pedidoInstalacao = window.__pedidoInstalacao || null;
+  if (pedidoInstalacao) botaoInstalar.hidden = false;
 
-  // Chrome, Edge e Samsung Internet avisam quando o app pode ser instalado:
-  // guardamos o aviso para abrir o pedido de instalação nativo ao tocar no botão.
+  // Chrome, Edge e Samsung Internet avisam quando o app pode ser instalado.
+  // Só então o botão aparece, e o clique abre o pedido de instalação nativo do navegador.
   window.addEventListener('beforeinstallprompt', (ev) => {
-    ev.preventDefault();
+    ev.preventDefault();               // guarda o aviso para mostrar no nosso botão
     pedidoInstalacao = ev;
     window.__pedidoInstalacao = ev;
+    botaoInstalar.hidden = false;
   });
 
-  // Sem esse aviso (iPhone, app do WhatsApp/Instagram, Firefox ou instalação recusada antes),
-  // o botão mostra como instalar pelo menu do navegador.
-  function mostrarInstrucoes() {
-    const guia = ehAppInterno ? 'app-interno' : ehIos ? 'ios' : 'menu';
-    tituloDialogo.textContent = guia === 'ios' ? 'Instalar no iPhone' : guia === 'app-interno' ? 'Abra no navegador' : 'Instalar o app';
-    dialogo.querySelectorAll('[data-guia]').forEach((ol) => { ol.hidden = ol.dataset.guia !== guia; });
-    if (dialogo.showModal) dialogo.showModal(); else dialogo.setAttribute('open', '');
-  }
+  // iPhone/iPad não têm esse aviso: o botão mostra as instruções do Safari.
+  if (ehIos && !jaInstalado && podeInstalar) botaoInstalar.hidden = false;
 
   botaoInstalar.addEventListener('click', () => {
     if (pedidoInstalacao) {
@@ -504,14 +489,18 @@ footer .wrap { padding-block: 0 20px; font-size: 12px; color: var(--muted); back
         pedidoInstalacao = null;       // o aviso só pode ser usado uma vez
         window.__pedidoInstalacao = null;
       });
-    } else {
-      mostrarInstrucoes();
+    } else if (ehIos && dialogoIos.showModal) {
+      dialogoIos.showModal();
     }
   });
-  document.getElementById('dialogo-fechar').addEventListener('click', () => {
-    if (dialogo.close) dialogo.close(); else dialogo.removeAttribute('open');
+
+  document.getElementById('dialogo-ios-fechar').addEventListener('click', () => dialogoIos.close());
+
+  window.addEventListener('appinstalled', () => {
+    botaoInstalar.hidden = true;
+    pedidoInstalacao = null;
+    window.__pedidoInstalacao = null;
   });
-  window.addEventListener('appinstalled', () => { botaoInstalar.hidden = true; pedidoInstalacao = null; });
 })();
 </script>
 </body>

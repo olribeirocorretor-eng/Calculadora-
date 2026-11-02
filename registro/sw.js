@@ -1,7 +1,7 @@
 /* Service worker da Calculadora Registro - SP (edição comemorativa).
  * Ao alterar index.html ou outros arquivos do app, aumente VERSAO
  * para que os aparelhos baixem a versão nova. */
-const VERSAO = 'v4';
+const VERSAO = 'v5';
 const CACHE_APP = `registro-app-${VERSAO}`;
 const CACHE_FONTES = 'registro-fontes';
 
