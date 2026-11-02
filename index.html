@@ -96,6 +96,31 @@
     border-radius: 999px;
   }
 
+  /* Atalho Holerite */
+  .holerite {
+    margin: 16px 16px 0;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 14px;
+    background: var(--preto);
+    color: var(--branco);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex: 0 0 auto;
+    transition: filter 0.12s ease;
+  }
+
+  .holerite span { display: flex; align-items: center; gap: 10px; }
+  .holerite:hover { filter: brightness(1.35); }
+  .holerite:active { filter: brightness(1.6); }
+  .holerite:focus-visible { outline: 3px solid var(--vermelho); outline-offset: 2px; }
+
   /* Registro */
   .registro {
     margin: 16px 16px 0;
@@ -245,11 +270,31 @@
   .tecla.operador.ativo { background: var(--branco); color: var(--preto); border: 2px solid var(--preto); }
   .tecla.igual { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); font-size: 30px; font-weight: 700; }
 
-  @media (max-height: 700px) {
-    .tecla { height: 56px; }
-    .registro { min-height: 0; }
-    .valor { font-size: 48px; }
+  @media (max-height: 900px) {
+    .holerite { margin-top: 12px; }
+    .registro { margin-top: 12px; min-height: 0; }
+    .registro li:nth-child(n+3) { display: none; }
+    .visor { min-height: 80px; }
+    .teclado { gap: 8px; padding-top: 12px; }
+    .tecla { height: 62px; }
   }
+
+  @media (max-height: 808px) {
+    .topo { padding-top: calc(16px + env(safe-area-inset-top)); padding-bottom: 14px; }
+    .topo svg { width: 56px; height: 51px; }
+    .holerite { margin-top: 12px; min-height: 44px; }
+    .registro { min-height: 0; margin-top: 12px; padding: 10px 16px; }
+    .registro li:nth-child(n+2) { display: none; }
+    .visor { min-height: 64px; padding-top: 4px; padding-bottom: 8px; }
+    .valor { font-size: 48px; }
+    .valor.medio { font-size: 40px; }
+    .valor.pequeno { font-size: 32px; }
+    .teclado { gap: 8px; padding-top: 12px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+    .tecla { height: 50px; }
+  }
+
+  /* Telas muito baixas: permite rolar em vez de cortar o teclado */
+  .app { overflow-y: auto; }
 
   .visualmente-oculto {
     position: absolute;
@@ -276,6 +321,15 @@
       <span class="selo">REGISTRO - SP</span>
     </div>
   </header>
+
+  <a class="holerite" href="https://servidoronline.gcaspp.com" target="_blank" rel="noopener noreferrer">
+    <span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+      Holerite
+    </span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+    <span class="visualmente-oculto">(abre em nova aba)</span>
+  </a>
 
   <section class="registro" aria-labelledby="titulo-registro">
     <div class="registro-cabecalho">
