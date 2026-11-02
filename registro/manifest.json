@@ -1,0 +1,20 @@
+{
+  "name": "Calculadora Registro - SP",
+  "short_name": "Registro - SP",
+  "description": "Calculadora comemorativa de Registro - SP, com as cores do rio Ribeira de Iguape, dos bananais, do chá e das lanternas.",
+  "lang": "pt-BR",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#EDF1E8",
+  "theme_color": "#2C6B65",
+  "categories": ["utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

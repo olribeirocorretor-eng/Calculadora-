@@ -1,7 +1,7 @@
 /* Service worker da calculadora SINDMUNICIPAIS.
  * Ao alterar index.html ou outros arquivos do app, aumente VERSAO
  * para que os aparelhos baixem a versão nova. */
-const VERSAO = 'v2';
+const VERSAO = 'v3';
 const CACHE_APP = `sindmunicipais-app-${VERSAO}`;
 const CACHE_FONTES = 'sindmunicipais-fontes';
 
@@ -40,6 +40,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
+
+  // A calculadora comemorativa (pasta registro/) tem o próprio service worker.
+  if (url.pathname.startsWith(new URL('./registro/', self.registration.scope).pathname)) return;
 
   // Página: tenta a rede primeiro (para pegar atualizações) e usa o cache sem internet.
   if (request.mode === 'navigate') {
