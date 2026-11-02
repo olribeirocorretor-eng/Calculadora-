@@ -102,9 +102,17 @@
     border-radius: 999px;
   }
 
-  /* Atalho Holerite */
-  .holerite {
+  /* Atalhos: Holerite e Instalar app */
+  .atalhos {
     margin: 16px 16px 0;
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+
+  .holerite {
+    flex: 1 1 auto;
+    min-width: 0;
     min-height: 48px;
     padding: 0 18px;
     border-radius: 14px;
@@ -118,7 +126,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    flex: 0 0 auto;
     transition: filter 0.12s ease;
   }
 
@@ -126,6 +133,77 @@
   .holerite:hover { filter: brightness(1.35); }
   .holerite:active { filter: brightness(1.6); }
   .holerite:focus-visible { outline: 3px solid var(--vermelho); outline-offset: 2px; }
+
+  .instalar {
+    flex: 0 0 auto;
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: 2px solid var(--vermelho);
+    background: var(--branco);
+    color: var(--vermelho);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .instalar[hidden] { display: none; }
+  .instalar:hover, .instalar:active { background: var(--vermelho); color: var(--branco); }
+  .instalar:focus-visible { outline: 3px solid var(--preto); outline-offset: 2px; }
+
+  /* Instruções de instalação no iPhone/iPad */
+  .dialogo {
+    width: min(360px, calc(100% - 32px));
+    border: 0;
+    border-radius: 20px;
+    padding: 0;
+    color: var(--preto);
+    font-family: inherit;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .dialogo::backdrop { background: rgba(17, 17, 17, 0.55); }
+
+  .dialogo-topo {
+    background: var(--vermelho);
+    color: var(--branco);
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .dialogo-corpo { padding: 16px 20px 20px; }
+
+  .dialogo ol {
+    margin: 0 0 16px;
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .dialogo ol svg { vertical-align: -4px; }
+
+  .dialogo-fechar {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--preto);
+    color: var(--branco);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 
   /* Registro */
   .registro {
@@ -277,7 +355,7 @@
   .tecla.igual { background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); font-size: 30px; font-weight: 700; }
 
   @media (max-height: 900px) {
-    .holerite { margin-top: 12px; }
+    .atalhos { margin-top: 12px; }
     .registro { margin-top: 12px; min-height: 0; }
     .registro li:nth-child(n+3) { display: none; }
     .visor { min-height: 80px; }
@@ -288,7 +366,8 @@
   @media (max-height: 808px) {
     .topo { padding-top: calc(16px + env(safe-area-inset-top)); padding-bottom: 14px; }
     .topo svg { width: 56px; height: 51px; }
-    .holerite { margin-top: 12px; min-height: 44px; }
+    .atalhos { margin-top: 12px; }
+    .holerite, .instalar { min-height: 44px; }
     .registro { min-height: 0; margin-top: 12px; padding: 10px 16px; }
     .registro li:nth-child(n+2) { display: none; }
     .visor { min-height: 64px; padding-top: 4px; padding-bottom: 8px; }
@@ -328,6 +407,7 @@
     </div>
   </header>
 
+  <div class="atalhos">
   <a class="holerite" href="https://servidoronline.gcaspp.com/pmregistro" target="_blank" rel="noopener noreferrer">
     <span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
@@ -336,6 +416,11 @@
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
     <span class="visualmente-oculto">(abre em nova aba)</span>
   </a>
+  <button type="button" class="instalar" id="instalar" hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+    Instalar app
+  </button>
+  </div>
 
   <section class="registro" aria-labelledby="titulo-registro">
     <div class="registro-cabecalho">
@@ -381,6 +466,20 @@
   </div>
 
 </main>
+
+<dialog class="dialogo" id="dialogo-ios" aria-labelledby="dialogo-ios-titulo">
+  <h2 class="dialogo-topo" id="dialogo-ios-titulo">Instalar no iPhone</h2>
+  <div class="dialogo-corpo">
+    <ol>
+      <li>No Safari, toque em <strong>Compartilhar</strong>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/></svg>
+        na barra do navegador.</li>
+      <li>Role a lista e toque em <strong>Adicionar à Tela de Início</strong>.</li>
+      <li>Toque em <strong>Adicionar</strong>. O ícone do SINDMUNICIPAIS aparece na tela inicial.</li>
+    </ol>
+    <button type="button" class="dialogo-fechar" id="dialogo-ios-fechar">Entendi</button>
+  </div>
+</dialog>
 
 <script>
 (function () {
@@ -606,6 +705,12 @@
 
   document.addEventListener('keydown', function (ev) {
     if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    // Com a janela de instruções aberta, o teclado não mexe na calculadora.
+    var dialogoAberto = document.querySelector('dialog[open]');
+    if (dialogoAberto) return;
+    // Enter em links ou botões fora do teclado (Holerite, Instalar, Limpar) faz a ação deles.
+    var focado = document.activeElement;
+    if (ev.key === 'Enter' && focado && focado.matches('a, button') && !el.teclado.contains(focado)) return;
     var seletor = /^[0-9]$/.test(ev.key) ? '[data-digito="' + ev.key + '"]' : MAPA_TECLAS[ev.key];
     if (!seletor) return;
     // Enter sempre significa "=" (preventDefault evita acionar a tecla que estiver focada).
@@ -627,6 +732,51 @@
       navigator.serviceWorker.register('sw.js').catch(function () { /* segue sem modo offline */ });
     });
   }
+
+  /* ---------- Botão "Instalar app" ---------- */
+
+  var botaoInstalar = document.getElementById('instalar');
+  var dialogoIos = document.getElementById('dialogo-ios');
+  var pedidoInstalacao = null;
+
+  var jaInstalado = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    window.navigator.standalone === true;
+  var ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var podeInstalar = location.protocol === 'https:' || location.hostname === 'localhost';
+
+  // Chrome, Edge e Samsung Internet avisam quando o app pode ser instalado.
+  window.addEventListener('beforeinstallprompt', function (ev) {
+    ev.preventDefault();               // guarda o aviso para mostrar no nosso botão
+    pedidoInstalacao = ev;
+    botaoInstalar.hidden = false;
+  });
+
+  // iPhone/iPad não têm esse aviso: o botão mostra as instruções do Safari.
+  if (ehIos && !jaInstalado && podeInstalar) {
+    botaoInstalar.hidden = false;
+  }
+
+  botaoInstalar.addEventListener('click', function () {
+    if (pedidoInstalacao) {
+      pedidoInstalacao.prompt();
+      pedidoInstalacao.userChoice.then(function (escolha) {
+        if (escolha.outcome === 'accepted') botaoInstalar.hidden = true;
+        pedidoInstalacao = null;       // o aviso só pode ser usado uma vez
+      });
+    } else if (ehIos && dialogoIos.showModal) {
+      dialogoIos.showModal();
+    }
+  });
+
+  document.getElementById('dialogo-ios-fechar').addEventListener('click', function () {
+    dialogoIos.close();
+  });
+
+  window.addEventListener('appinstalled', function () {
+    botaoInstalar.hidden = true;
+    pedidoInstalacao = null;
+  });
 })();
 </script>
 </body>
