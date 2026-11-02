@@ -6,6 +6,12 @@
 <meta name="theme-color" content="#D3161E">
 <title>SINDMUNICIPAIS · Calculadora</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Crect width='120' height='110' rx='18' fill='%23D3161E'/%3E%3Ccircle cx='74' cy='24' r='19' fill='%23111'/%3E%3Cpath d='M60 50C80 44 100 40 118 42C104 50 90 56 80 60C84 76 90 92 96 108C84 98 76 86 70 74C70 86 68 98 64 108C58 88 56 68 60 50Z' fill='%23111'/%3E%3Ccircle cx='58' cy='26' r='19' fill='%23fff'/%3E%3Cpath d='M64 52C46 44 24 42 2 46C18 52 34 58 46 64C40 78 32 92 22 108C36 100 46 88 52 76C56 88 60 98 66 104C68 84 70 66 64 52Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SINDMUNICIPAIS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -613,6 +619,14 @@
   });
 
   render();
+
+  // Progressive Web App: permite instalar e usar sem internet.
+  // (Service workers só funcionam em https ou localhost, não abrindo o arquivo direto.)
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* segue sem modo offline */ });
+    });
+  }
 })();
 </script>
 </body>
