@@ -1,7 +1,7 @@
 /* Service worker da calculadora SINDMUNICIPAIS.
  * Ao alterar index.html ou outros arquivos do app, aumente VERSAO
  * para que os aparelhos baixem a versão nova. */
-const VERSAO = 'v4';
+const VERSAO = 'v5';
 const CACHE_APP = `sindmunicipais-app-${VERSAO}`;
 const CACHE_FONTES = 'sindmunicipais-fontes';
 
